@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+    <link rel="icon" type="image/webp" href="locantof1.webp">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .main-wrapper {
+            width: 100%;
+            height: 100%;
+            max-width: 480px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(255, 255, 255, 0.1);
+            background-color: #000;
+        }
+
+        .bg-slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        .bg-slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .bg-slide.active {
+            opacity: 1;
+        }
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 2;
+        }
+        .content-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            text-align: center;
+            padding: 20px 15px;
+        }
+        .logo-container {
+            width: 100%;
+            max-width: 100%;
+            padding: 0 20px;
+            margin-top: 5px;
+        }
+        .logo-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.5));
+        }
+        
+        .powered-by {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            white-space: nowrap;
+        }
+        
+        .locanto-text {
+            font-weight: 800;
+            font-style: italic;
+            font-size: 1.35rem;
+        }
+        .lo-dark-blue { color: #1d4fa4; }
+        .can-vibrant-orange { color: #f26522; }
+        .to-reddish-orange { color: #c64416; }
+
+        .middle-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .text-line {
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            line-height: 1.1;
+            margin: 8px 0;
+            opacity: 0;
+        }
+        .text-many-holes {
+            font-size: clamp(2.8rem, 11vw, 4.2rem);
+            color: #fff;
+            text-shadow: 0 0 10px #ff0055, 0 0 20px #ff0055, 0 0 40px #ff0055;
+        }
+        .slide-from-left {
+            animation: slideLeft 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        .text-waiting {
+            font-size: clamp(2rem, 7.5vw, 3.2rem);
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+        }
+        .slide-from-right {
+            animation: slideRight 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        .text-free {
+            font-size: clamp(3.2rem, 13vw, 5rem);
+            color: #39ff14;
+            text-shadow: 0 0 15px #39ff14, 0 0 30px #39ff14, 0 0 60px #39ff14;
+            margin-bottom: 15px;
+        }
+        .slide-from-bottom {
+            animation: slideBottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, 
+                       megaShake 0.15s infinite alternate linear;
+            animation-delay: 0s, 0.4s;
+        }
+
+        .cta-button {
+            display: none;
+            text-decoration: none;
+            padding: 14px 35px;
+            font-size: clamp(1.2rem, 5.5vw, 1.8rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            color: #000;
+            background: linear-gradient(90deg, #ffea00 0%, #ffcc00 100%);
+            background-size: 200% auto;
+            border-radius: 50px;
+            box-shadow: 0 0 20px #ffcc00, inset 0 0 10px rgba(255,255,255,0.6);
+            cursor: pointer;
+            border: none;
+            outline: none;
+            position: relative;
+            z-index: 10;
+            margin-bottom: 10px;
+            transition: transform 0.2s;
+            width: 85%;
+        }
+        
+        .button-active {
+            display: inline-block;
+            animation: pulseNudge 1.5s infinite ease-in-out;
+        }
+
+        .footer-copyright {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+            margin-bottom: 5px;
+        }
+
+        .blur-overlay-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.90);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 99999;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .popup-highlight-text {
+            color: #ffffff;
+            font-size: clamp(1.3rem, 5.5vw, 1.9rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            line-height: 1.3;
+            margin-bottom: 25px;
+            text-shadow: 0 0 15px #ff0055, 0 0 30px #ff0055, 2px 2px 5px #000;
+            letter-spacing: 0.5px;
+            animation: textGlowPulse 1.2s infinite alternate ease-in-out;
+        }
+
+        .premium-buffer {
+            width: 65px;
+            height: 65px;
+            border: 6px solid rgba(255, 255, 255, 0.1);
+            border-left-color: #39ff14;
+            border-top-color: #00ffff;
+            border-right-color: #ff0055;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 15px rgba(0,255,255,0.8));
+        }
+
+        .popup-powered-by {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            margin-top: 10px;
+            white-space: nowrap;
+        }
+
+        .popup-loading-subtext {
+            font-size: 0.85rem;
+            color: #39ff14;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-top: 12px;
+            text-shadow: 0 0 8px rgba(57, 255, 20, 0.6);
+            animation: blinkText 1s infinite alternate;
+        }
+
+        @keyframes slideLeft {
+            0% { transform: translateX(-150%) skewX(-20deg); opacity: 0; }
+            100% { transform: translateX(0) skewX(0deg); opacity: 1; }
+        }
+        @keyframes slideRight {
+            0% { transform: translateX(150%) skewX(20deg); opacity: 0; }
+            100% { transform: translateX(0) skewX(0deg); opacity: 1; }
+        }
+        @keyframes slideBottom {
+            0% { transform: translateY(150%) scale(0.5); opacity: 0; }
+            100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        @keyframes megaShake {
+            0% { transform: translate(2px, 1px) rotate(0deg) scale(1); }
+            20% { transform: translate(-1px, -2px) rotate(-1deg) scale(1.05); }
+            40% { transform: translate(-3px, 0px) rotate(1deg) scale(1); }
+            60% { transform: translate(0px, 2px) rotate(0deg) scale(1.05); }
+            80% { transform: translate(1px, -1px) rotate(-1deg) scale(1); }
+            100% { transform: translate(-1px, 2px) rotate(1deg) scale(1.08); }
+        }
+        @keyframes pulseNudge {
+            0% { transform: scale(1) rotate(0deg); box-shadow: 0 0 20px #ffcc00; }
+            25% { transform: scale(1.05) rotate(-1deg); }
+            50% { transform: scale(1) rotate(1deg); box-shadow: 0 0 35px #ffea00; }
+            75% { transform: scale(1.05) rotate(-1deg); }
+            100% { transform: scale(1) rotate(0deg); box-shadow: 0 0 20px #ffcc00; }
+        }
+        @keyframes textGlowPulse {
+            0% { text-shadow: 0 0 10px #ff0055, 0 0 20px #ff0055; transform: scale(1); }
+            100% { text-shadow: 0 0 20px #39ff14, 0 0 40px #39ff14; transform: scale(1.03); }
+        }
+        @keyframes blinkText {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="mainWrapper" class="main-wrapper">
+        <div class="bg-slider">
+            <div class="bg-slide active" style="background-image: url('ki1.webp');"></div>
+            <div class="bg-slide" style="background-image: url('ki2.webp');"></div>
+            <div class="bg-slide" style="background-image: url('ki3.webp');"></div>
+            <div class="bg-slide" style="background-image: url('ki4.webp');"></div>
+            <div class="bg-slide" style="background-image: url('ki5.webp');"></div>
+        </div>
+
+        <div class="overlay"></div>
+
+        <div class="content-container">
+            <div class="logo-container">
+                <img src="lgd1.webp" alt="Logo">
+                <div class="powered-by">
+                    Powered by 
+                    <span class="locanto-text">
+                        <span class="lo-dark-blue">L</span><span class="lo-dark-blue">o</span><span class="can-vibrant-orange">c</span><span class="can-vibrant-orange">a</span><span class="can-vibrant-orange">n</span><span class="to-reddish-orange">t</span><span class="to-reddish-orange">o</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="middle-content">
+                <h1 id="text1" class="text-line text-many-holes">Many Holes</h1>
+                <h2 id="text2" class="text-line text-waiting">Waiting For You</h2>
+                <div id="text3" class="text-line text-free">Free</div>
+                
+                <button id="ctaBtn" class="cta-button">Get Hole</button>
+            </div>
+
+            <div class="footer-copyright">
+                Copyright © 2006-2026 Locanto™
+            </div>
+        </div>
+
+        <div id="blurScreen" class="blur-overlay-screen">
+            <div class="popup-highlight-text">
+                Fuck 99+ Small & Big Holes Near Your Area By Free Joining This Website
+            </div>
+            <div class="premium-buffer"></div>
+            <div class="popup-powered-by">
+                Powered by 
+                <span class="locanto-text">
+                    <span class="lo-dark-blue">L</span><span class="lo-dark-blue">o</span><span class="can-vibrant-orange">c</span><span class="can-vibrant-orange">a</span><span class="can-vibrant-orange">n</span><span class="to-reddish-orange">t</span><span class="to-reddish-orange">o</span>
+                </span>
+            </div>
+            <div class="popup-loading-subtext">
+                FREE Signup Page Loading,,,,,,
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // আপনার অ্যাফিলিয়েট লিংকটি নিচের ইনভার্টেড কমার ভেতরে বসিয়ে দিন
+        const affiliateLink = "https://c4tpbrw.balancedhonesty.org/wccm5xm?s1=vip&cid=vip";
+
+        const slides = document.querySelectorAll('.bg-slide');
+        let currentSlide = 0;
+
+        setInterval(() => {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }, 1000);
+
+        window.addEventListener('load', () => {
+            const t1 = document.getElementById('text1');
+            const t2 = document.getElementById('text2');
+            const t3 = document.getElementById('text3');
+            const btn = document.getElementById('ctaBtn');
+            const blurScreen = document.getElementById('blurScreen');
+
+            t1.classList.add('slide-from-left');
+
+            setTimeout(() => {
+                t2.classList.add('slide-from-right');
+            }, 300);
+
+            setTimeout(() => {
+                t3.classList.add('slide-from-bottom');
+                btn.classList.add('button-active');
+            }, 600);
+
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                blurScreen.style.display = 'flex';
+
+                // ঠিক ৪ সেকেন্ড (4000 মিলিসেকেন্ড) পর লিংক ওপেন হবে
+                setTimeout(() => {
+                    if (affiliateLink && affiliateLink.trim() !== "") {
+                        window.location.href = affiliateLink;
+                    } else {
+                        alert("দয়া করে কোডের ভেতরে অ্যাফিলিয়েট লিংকটি বসান!");
+                        blurScreen.style.display = 'none';
+                    }
+                }, 4000);
+            });
+        });
+    </script>
+</body>
+</html>
